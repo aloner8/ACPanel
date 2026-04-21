@@ -1,0 +1,15 @@
+{
+  "name": "acpanel",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @acpanel/shared && npm run build -w @acpanel/api",
+    "dev:api": "npm run dev -w @acpanel/api",
+    "prisma:generate": "npm run prisma:generate -w @acpanel/api",
+    "prisma:migrate": "npm run prisma:migrate -w @acpanel/api"
+  }
+}

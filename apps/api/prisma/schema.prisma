@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  OPERATOR
+  SUPPORT
+  CUSTOMER
+}
+
+enum CustomerStatus {
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+enum DeploymentStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+  CANCELED
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  displayName  String
+  role         UserRole      @default(OPERATOR)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  activityLogs ActivityLog[]
+  jobs         DeploymentJob[] @relation("DeploymentRequestedBy")
+}
+
+model Customer {
+  id                String             @id @default(cuid())
+  code              String             @unique
+  name              String
+  email             String?
+  phone             String?
+  companyName       String?
+  taxId             String?
+  addressLine1      String?
+  addressLine2      String?
+  district          String?
+  province          String?
+  postalCode        String?
+  country           String?
+  status            CustomerStatus     @default(ACTIVE)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  domains           Domain[]
+  scripts           DeploymentScript[]
+  jobs              DeploymentJob[]
+  activityLogs      ActivityLog[]
+  backupRecords     BackupRecord[]
+}
+
+model Domain {
+  id               String             @id @default(cuid())
+  customerId       String
+  rootDomain       String
+  subdomain        String?
+  fqdn             String             @unique
+  dnsProvider      String?
+  bindZoneName     String?
+  nginxServerName  String?
+  sslStatus        String?
+  deploymentStatus DeploymentStatus   @default(PENDING)
+  isPrimary        Boolean            @default(false)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  customer         Customer           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  configs          DomainConfig[]
+  scripts          DeploymentScript[]
+  jobs             DeploymentJob[]
+  activityLogs     ActivityLog[]
+  backupRecords    BackupRecord[]
+}
+
+model DomainConfig {
+  id         String   @id @default(cuid())
+  domainId   String
+  configKey  String
+  configValue String
+  configType String?
+  isSecret   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  domain     Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
+
+  @@unique([domainId, configKey])
+}
+
+model AppPackage {
+  id             String             @id @default(cuid())
+  name           String
+  slug           String             @unique
+  category       String?
+  description    String?
+  version        String
+  dockerImage    String?
+  defaultPort    Int?
+  installMode    String?
+  templatePath   String?
+  envSchema      Json?
+  isActive       Boolean            @default(true)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  scripts        DeploymentScript[]
+}
+
+model DeploymentScript {
+  id           String           @id @default(cuid())
+  customerId   String?
+  domainId     String?
+  appPackageId String?
+  scriptType   String
+  scriptName   String
+  scriptPath   String
+  runtime      String?
+  version      String?
+  contentHash  String?
+  isTemplate   Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  customer     Customer?        @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  domain       Domain?          @relation(fields: [domainId], references: [id], onDelete: SetNull)
+  appPackage   AppPackage?      @relation(fields: [appPackageId], references: [id], onDelete: SetNull)
+  jobs         DeploymentJob[]
+}
+
+model DeploymentJob {
+  id            String           @id @default(cuid())
+  customerId    String?
+  domainId      String?
+  scriptId      String?
+  jobType       String
+  status        DeploymentStatus @default(PENDING)
+  requestedById String?
+  resultSummary String?
+  rawLogPath    String?
+  startedAt     DateTime?
+  finishedAt    DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  customer      Customer?        @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  domain        Domain?          @relation(fields: [domainId], references: [id], onDelete: SetNull)
+  script        DeploymentScript? @relation(fields: [scriptId], references: [id], onDelete: SetNull)
+  requestedBy   User?            @relation("DeploymentRequestedBy", fields: [requestedById], references: [id], onDelete: SetNull)
+}
+
+model ActivityLog {
+  id           String    @id @default(cuid())
+  actorId      String?
+  customerId   String?
+  domainId     String?
+  action       String
+  resourceType String
+  resourceId   String?
+  ipAddress    String?
+  metadata     Json?
+  createdAt    DateTime  @default(now())
+  actor        User?     @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  customer     Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  domain       Domain?   @relation(fields: [domainId], references: [id], onDelete: SetNull)
+}
+
+model BackupRecord {
+  id         String    @id @default(cuid())
+  customerId String?
+  domainId   String?
+  backupType String
+  storagePath String
+  sizeBytes  BigInt?
+  checksum   String?
+  status     String
+  startedAt  DateTime?
+  finishedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  domain     Domain?   @relation(fields: [domainId], references: [id], onDelete: SetNull)
+}

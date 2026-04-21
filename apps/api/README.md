@@ -1,8 +1,26 @@
 # API App
 
-Planned Node.js application responsibilities:
+Current backend stack:
 
-- expose ACPanel REST API
-- orchestrate services in `/services`
-- persist data to PostgreSQL
-- manage auth, logs, jobs, and automation workflows
+- Node.js
+- TypeScript
+- Fastify
+- Prisma ORM
+- PostgreSQL
+
+Current API modules:
+
+- health
+- customers
+- domains
+- packages
+- activity logs
+- deployments
+- backups
+
+Useful commands:
+
+- `npm run dev:api`
+- `npm run prisma:generate`
+- `npm run prisma:migrate`
+- `npm run build`

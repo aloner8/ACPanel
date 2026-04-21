@@ -95,3 +95,21 @@ ACPanel/
 - Primary domain: `alonersoft.com`
 
 This repository currently contains the initial project structure and design documentation.
+
+## Backend Scaffold Status
+
+The repository now includes:
+
+- a Node.js + TypeScript API scaffold in `apps/api`
+- Prisma schema for the first ACPanel data model
+- shared validation schemas in `packages/shared`
+- local PostgreSQL container config in `infra/docker/docker-compose.yml`
+
+### Quick start
+
+1. Start PostgreSQL from `infra/docker/docker-compose.yml`
+2. Create `.env` from `.env.example`
+3. Run `npm install`
+4. Run `npm run prisma:generate`
+5. Run `npm run prisma:migrate`
+6. Run `npm run dev:api`
