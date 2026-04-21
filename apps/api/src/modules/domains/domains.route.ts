@@ -1,8 +1,9 @@
+import { UserRole } from '@prisma/client';
 import type { FastifyPluginAsync } from 'fastify';
 import { domainSchema } from '@acpanel/shared';
 
 export const domainRoutes: FastifyPluginAsync = async (app) => {
-  app.get('/domains', async () => {
+  app.get('/domains', { preHandler: app.authenticate }, async () => {
     return app.prisma.domain.findMany({
       include: {
         customer: true,
@@ -12,7 +13,7 @@ export const domainRoutes: FastifyPluginAsync = async (app) => {
     });
   });
 
-  app.post('/domains', async (request, reply) => {
+  app.post('/domains', { preHandler: app.requireRoles([UserRole.ADMIN, UserRole.OPERATOR]) }, async (request, reply) => {
     const payload = domainSchema.parse(request.body);
 
     const domain = await app.prisma.domain.create({

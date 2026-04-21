@@ -1,5 +1,25 @@
 import { z } from 'zod';
 
+export const userRoleSchema = z.enum(['ADMIN', 'OPERATOR', 'SUPPORT', 'CUSTOMER']);
+
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8)
+});
+
+export const bootstrapAdminSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  displayName: z.string().min(2)
+});
+
+export const userCreateSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  displayName: z.string().min(2),
+  role: userRoleSchema
+});
+
 export const customerSchema = z.object({
   code: z.string().min(1),
   name: z.string().min(1),
@@ -43,3 +63,6 @@ export const appPackageSchema = z.object({
 export type CreateCustomerInput = z.infer<typeof customerSchema>;
 export type CreateDomainInput = z.infer<typeof domainSchema>;
 export type CreateAppPackageInput = z.infer<typeof appPackageSchema>;
+export type LoginInput = z.infer<typeof loginSchema>;
+export type BootstrapAdminInput = z.infer<typeof bootstrapAdminSchema>;
+export type CreateUserInput = z.infer<typeof userCreateSchema>;

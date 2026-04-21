@@ -10,6 +10,7 @@ Current backend stack:
 
 Current API modules:
 
+- auth
 - health
 - customers
 - domains
@@ -24,3 +25,11 @@ Useful commands:
 - `npm run prisma:generate`
 - `npm run prisma:migrate`
 - `npm run build`
+
+Auth endpoints:
+
+- `POST /api/auth/bootstrap`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `GET /api/auth/users`
+- `POST /api/auth/users`
