@@ -19,14 +19,41 @@ export interface Customer {
   createdAt?: string;
 }
 
+export interface CustomerPayload {
+  code: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  companyName?: string | null;
+  taxId?: string | null;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  district?: string | null;
+  province?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
+}
+
 export interface Domain {
   id: string;
+  customerId?: string;
   fqdn: string;
   rootDomain: string;
   subdomain?: string | null;
   sslStatus?: string | null;
   deploymentStatus?: string | null;
   customer?: Customer;
+}
+
+export interface DomainPayload {
+  customerId: string;
+  rootDomain: string;
+  subdomain?: string | null;
+  dnsProvider?: string | null;
+  bindZoneName?: string | null;
+  nginxServerName?: string | null;
+  sslStatus?: string | null;
+  isPrimary: boolean;
 }
 
 export interface AppPackage {
@@ -76,8 +103,32 @@ export class ApiService {
     return this.http.get<Customer[]>(`${API_BASE_URL}/customers`);
   }
 
+  createCustomer(payload: CustomerPayload) {
+    return this.http.post<Customer>(`${API_BASE_URL}/customers`, payload);
+  }
+
+  updateCustomer(id: string, payload: CustomerPayload) {
+    return this.http.put<Customer>(`${API_BASE_URL}/customers/${id}`, payload);
+  }
+
+  deleteCustomer(id: string) {
+    return this.http.delete<void>(`${API_BASE_URL}/customers/${id}`);
+  }
+
   getDomains() {
     return this.http.get<Domain[]>(`${API_BASE_URL}/domains`);
+  }
+
+  createDomain(payload: DomainPayload) {
+    return this.http.post<Domain>(`${API_BASE_URL}/domains`, payload);
+  }
+
+  updateDomain(id: string, payload: DomainPayload) {
+    return this.http.put<Domain>(`${API_BASE_URL}/domains/${id}`, payload);
+  }
+
+  deleteDomain(id: string) {
+    return this.http.delete<void>(`${API_BASE_URL}/domains/${id}`);
   }
 
   getPackages() {
