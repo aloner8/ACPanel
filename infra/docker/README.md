@@ -20,6 +20,10 @@ Run from repo root:
 
 - `docker compose -f infra/docker/docker-compose.dev.yml up --build`
 
+Note:
+
+- first boot in development may take longer because `api` and `web` install npm dependencies inside containers
+
 ## Production
 
 1. Copy `.env.prod.example` to `infra/docker/.env.prod`
