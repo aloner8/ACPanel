@@ -48,6 +48,20 @@ export interface ActivityLog {
   createdAt: string;
 }
 
+export interface DashboardSummary {
+  health: HealthStatus;
+  counts: {
+    customers: number;
+    domains: number;
+    packages: number;
+    logs: number;
+  };
+  customers: Customer[];
+  domains: Domain[];
+  packages: AppPackage[];
+  logs: ActivityLog[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -82,7 +96,7 @@ export class ApiService {
       packages: this.getPackages(),
       logs: this.getActivityLogs()
     }).pipe(
-      map(({ health, customers, domains, packages, logs }) => ({
+      map(({ health, customers, domains, packages, logs }): DashboardSummary => ({
         health,
         counts: {
           customers: customers.length,

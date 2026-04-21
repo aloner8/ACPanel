@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, combineLatest, map, of } from 'rxjs';
-import { ApiService } from '../../core/api/api.service';
+import { ApiService, type DashboardSummary } from '../../core/api/api.service';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -13,6 +14,7 @@ import { ApiService } from '../../core/api/api.service';
 })
 export class DashboardPageComponent {
   private readonly api = inject(ApiService);
+  readonly auth = inject(AuthService);
 
   readonly vm = toSignal(
     combineLatest([
@@ -68,4 +70,8 @@ export class DashboardPageComponent {
       }
     }
   );
+
+  logout() {
+    this.auth.logout();
+  }
 }

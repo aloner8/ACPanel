@@ -1,3 +1,11 @@
+@if (!auth.initialized()) {
+  <div class="startup-screen">
+    <div class="startup-card">
+      <strong>Initializing ACPanel</strong>
+      <span>Checking your authentication session...</span>
+    </div>
+  </div>
+} @else {
 <div class="app-shell">
   <aside class="sidebar">
     <a class="brand" routerLink="/">
@@ -16,6 +24,14 @@
       <a routerLink="/activity-logs" routerLinkActive="active">Activity Logs</a>
       <a routerLink="/settings" routerLinkActive="active">Settings</a>
     </nav>
+
+    @if (auth.user(); as user) {
+      <section class="sidebar-user">
+        <strong>{{ user.displayName }}</strong>
+        <span>{{ user.role }}</span>
+        <small>{{ user.email }}</small>
+      </section>
+    }
 
     <section class="sidebar-card">
       <span>Primary Domain</span>
@@ -39,3 +55,4 @@
     <router-outlet></router-outlet>
   </main>
 </div>
+}

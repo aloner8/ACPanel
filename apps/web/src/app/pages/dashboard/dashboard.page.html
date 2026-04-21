@@ -7,6 +7,13 @@
     <p class="summary">
       Monitor the platform, prepare deployments, and manage `alonersoft.com` workloads from one place.
     </p>
+    @if (auth.user(); as user) {
+      <div class="user-chip">
+        <strong>{{ user.displayName }}</strong>
+        <span>{{ user.role }} · {{ user.email }}</span>
+        <button type="button" (click)="logout()">Sign Out</button>
+      </div>
+    }
   </div>
   <div class="status-card">
     <span class="status-label">API Status</span>

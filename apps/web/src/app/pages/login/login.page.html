@@ -1,0 +1,78 @@
+<section class="login-shell">
+  <div class="login-copy">
+    <p class="eyebrow">ACPanel Access</p>
+    <h1>Secure entry for hosting operations and customer runtime management.</h1>
+    <p class="summary">
+      Sign in to manage domains, install packages, inspect logs, and orchestrate customer workloads on your VPS.
+    </p>
+
+    <div class="feature-list">
+      <div class="feature-card">
+        <strong>Domain Control</strong>
+        <span>Manage root domains, subdomains, DNS, and Nginx mappings.</span>
+      </div>
+      <div class="feature-card">
+        <strong>Deployment Actions</strong>
+        <span>Launch recreate, backup, and package-based runtime workflows.</span>
+      </div>
+      <div class="feature-card">
+        <strong>Audit Visibility</strong>
+        <span>Track operator actions and customer environment changes.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-card">
+    <div class="mode-switch">
+      <button type="button" [class.active]="mode() === 'login'" (click)="setMode('login')">Login</button>
+      <button type="button" [class.active]="mode() === 'bootstrap'" (click)="setMode('bootstrap')">Bootstrap Admin</button>
+    </div>
+
+    @if (errorMessage()) {
+      <p class="feedback error">{{ errorMessage() }}</p>
+    }
+
+    @if (successMessage()) {
+      <p class="feedback success">{{ successMessage() }}</p>
+    }
+
+    @if (mode() === 'login') {
+      <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+        <label>
+          <span>Email</span>
+          <input type="email" formControlName="email" placeholder="admin@alonersoft.com" />
+        </label>
+
+        <label>
+          <span>Password</span>
+          <input type="password" formControlName="password" placeholder="Minimum 8 characters" />
+        </label>
+
+        <button type="submit" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
+    } @else {
+      <form class="auth-form" [formGroup]="bootstrapForm" (ngSubmit)="submitBootstrap()">
+        <label>
+          <span>Display Name</span>
+          <input type="text" formControlName="displayName" placeholder="ACPanel Administrator" />
+        </label>
+
+        <label>
+          <span>Email</span>
+          <input type="email" formControlName="email" placeholder="admin@alonersoft.com" />
+        </label>
+
+        <label>
+          <span>Password</span>
+          <input type="password" formControlName="password" placeholder="Minimum 8 characters" />
+        </label>
+
+        <button type="submit" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Creating...' : 'Create First Admin' }}
+        </button>
+      </form>
+    }
+  </div>
+</section>

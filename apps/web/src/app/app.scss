@@ -3,6 +3,31 @@
   min-height: 100vh;
 }
 
+.startup-screen {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at top left, rgba(242, 104, 49, 0.22), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(76, 133, 255, 0.18), transparent 24%),
+    var(--surface-base);
+}
+
+.startup-card {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1.4rem 1.6rem;
+  border-radius: 1.4rem;
+  border: 1px solid var(--border-soft);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.startup-card span {
+  color: var(--text-muted);
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: 290px minmax(0, 1fr);
@@ -80,6 +105,20 @@
   border-radius: 1.15rem;
   border: 1px solid var(--border-soft);
   background: rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-user {
+  display: grid;
+  gap: 0.2rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1.15rem;
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-user span,
+.sidebar-user small {
+  color: var(--text-muted);
 }
 
 .sidebar-card span,
