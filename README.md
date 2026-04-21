@@ -105,6 +105,7 @@ The repository now includes:
 - shared validation schemas in `packages/shared`
 - local PostgreSQL container config in `infra/docker/docker-compose.yml`
 - an Angular dashboard scaffold in `apps/web`
+- Dockerfiles and compose stacks for development and VPS deployment
 
 ### Quick start
 
@@ -115,3 +116,10 @@ The repository now includes:
 5. Run `npm run prisma:migrate`
 6. Run `npm run dev:api`
 7. Run `npm run dev:web`
+
+### Docker quick start
+
+- Development:
+  - `docker compose -f infra/docker/docker-compose.dev.yml up --build`
+- Production:
+  - `docker compose --env-file infra/docker/.env.prod -f infra/docker/docker-compose.prod.yml up -d --build`
