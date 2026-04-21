@@ -104,6 +104,7 @@ The repository now includes:
 - Prisma schema for the first ACPanel data model
 - shared validation schemas in `packages/shared`
 - local PostgreSQL container config in `infra/docker/docker-compose.yml`
+- an Angular dashboard scaffold in `apps/web`
 
 ### Quick start
 
@@ -113,3 +114,4 @@ The repository now includes:
 4. Run `npm run prisma:generate`
 5. Run `npm run prisma:migrate`
 6. Run `npm run dev:api`
+7. Run `npm run dev:web`

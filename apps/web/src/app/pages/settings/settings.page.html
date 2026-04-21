@@ -1,0 +1,15 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Environment</p>
+    <h1>Settings</h1>
+  </div>
+</section>
+
+<section class="settings-grid">
+  @for (item of items; track item.title) {
+    <article class="setting-card">
+      <span>{{ item.title }}</span>
+      <strong>{{ item.value }}</strong>
+    </article>
+  }
+</section>

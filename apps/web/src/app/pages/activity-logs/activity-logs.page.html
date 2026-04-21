@@ -1,0 +1,26 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Audit Trail</p>
+    <h1>Activity Logs</h1>
+  </div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <span>Action</span>
+    <span>Resource</span>
+    <span>Created</span>
+  </div>
+
+  @if (logs().length) {
+    @for (log of logs(); track log.id) {
+      <div class="table-row">
+        <strong>{{ log.action }}</strong>
+        <span>{{ log.resourceType }} {{ log.resourceId || '' }}</span>
+        <code>{{ log.createdAt | date: 'medium' }}</code>
+      </div>
+    }
+  } @else {
+    <p class="empty">No activity logs yet.</p>
+  }
+</section>

@@ -1,0 +1,26 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">DNS + Runtime</p>
+    <h1>Domains</h1>
+  </div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <span>FQDN</span>
+    <span>Customer</span>
+    <span>Status</span>
+  </div>
+
+  @if (domains().length) {
+    @for (domain of domains(); track domain.id) {
+      <div class="table-row">
+        <strong>{{ domain.fqdn }}</strong>
+        <span>{{ domain.customer?.name || 'Unassigned' }}</span>
+        <code>{{ domain.deploymentStatus || 'PENDING' }}</code>
+      </div>
+    }
+  } @else {
+    <p class="empty">No domains available yet.</p>
+  }
+</section>

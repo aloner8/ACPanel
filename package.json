@@ -9,6 +9,8 @@
   "scripts": {
     "build": "npm run build -w @acpanel/shared && npm run build -w @acpanel/api",
     "dev:api": "npm run dev -w @acpanel/api",
+    "dev:web": "npm run start -w @acpanel/web",
+    "build:web": "npm run build -w @acpanel/web",
     "prisma:generate": "npm run prisma:generate -w @acpanel/api",
     "prisma:migrate": "npm run prisma:migrate -w @acpanel/api"
   }

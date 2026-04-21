@@ -1,0 +1,41 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">AC</span>
+      <div>
+        <strong>ACPanel</strong>
+        <span>Hosting Control</span>
+      </div>
+    </a>
+
+    <nav class="nav">
+      <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/customers" routerLinkActive="active">Customers</a>
+      <a routerLink="/domains" routerLinkActive="active">Domains</a>
+      <a routerLink="/packages" routerLinkActive="active">Packages</a>
+      <a routerLink="/activity-logs" routerLinkActive="active">Activity Logs</a>
+      <a routerLink="/settings" routerLinkActive="active">Settings</a>
+    </nav>
+
+    <section class="sidebar-card">
+      <span>Primary Domain</span>
+      <strong>alonersoft.com</strong>
+      <small>VPS 194.233.84.216</small>
+    </section>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <div>
+        <p>Operations Dashboard</p>
+        <h1>Customer Hosting Manager</h1>
+      </div>
+      <div class="topbar-pulse">
+        <span></span>
+        Live Workspace
+      </div>
+    </header>
+
+    <router-outlet></router-outlet>
+  </main>
+</div>

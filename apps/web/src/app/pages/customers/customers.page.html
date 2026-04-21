@@ -1,0 +1,26 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Customer Registry</p>
+    <h1>Customers</h1>
+  </div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <span>Name</span>
+    <span>Code</span>
+    <span>Contact</span>
+  </div>
+
+  @if (customers().length) {
+    @for (customer of customers(); track customer.id) {
+      <div class="table-row">
+        <strong>{{ customer.name }}</strong>
+        <code>{{ customer.code }}</code>
+        <span>{{ customer.email || customer.phone || 'No contact detail' }}</span>
+      </div>
+    }
+  } @else {
+    <p class="empty">No customers yet. Create records from the API to populate this page.</p>
+  }
+</section>

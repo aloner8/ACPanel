@@ -1,0 +1,26 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">App Catalog</p>
+    <h1>Packages</h1>
+  </div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <span>Package</span>
+    <span>Category</span>
+    <span>Version</span>
+  </div>
+
+  @if (packages().length) {
+    @for (item of packages(); track item.id) {
+      <div class="table-row">
+        <strong>{{ item.name }}</strong>
+        <span>{{ item.category || 'General package' }}</span>
+        <code>{{ item.version }}</code>
+      </div>
+    }
+  } @else {
+    <p class="empty">No packages defined yet.</p>
+  }
+</section>
