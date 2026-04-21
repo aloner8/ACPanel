@@ -60,9 +60,22 @@ export const appPackageSchema = z.object({
   isActive: z.boolean().default(true)
 });
 
+export const deploymentCreateSchema = z.object({
+  customerId: z.string().min(1),
+  domainId: z.string().min(1),
+  appPackageId: z.string().min(1),
+  jobType: z.string().min(1).default('deploy'),
+  scriptType: z.string().min(1).default('docker-stack'),
+  requestedVersion: z.string().optional().nullable(),
+  runtime: z.string().optional().nullable(),
+  envConfig: z.record(z.any()).optional(),
+  notes: z.string().optional().nullable()
+});
+
 export type CreateCustomerInput = z.infer<typeof customerSchema>;
 export type CreateDomainInput = z.infer<typeof domainSchema>;
 export type CreateAppPackageInput = z.infer<typeof appPackageSchema>;
+export type CreateDeploymentInput = z.infer<typeof deploymentCreateSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type BootstrapAdminInput = z.infer<typeof bootstrapAdminSchema>;
 export type CreateUserInput = z.infer<typeof userCreateSchema>;

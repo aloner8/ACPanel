@@ -1,5 +1,3 @@
-@let data = vm();
-
 <section class="hero">
   <div>
     <p class="eyebrow">ACPanel Control Surface</p>
@@ -10,41 +8,41 @@
     @if (auth.user(); as user) {
       <div class="user-chip">
         <strong>{{ user.displayName }}</strong>
-        <span>{{ user.role }} · {{ user.email }}</span>
+        <span>{{ user.role }} | {{ user.email }}</span>
         <button type="button" (click)="logout()">Sign Out</button>
       </div>
     }
   </div>
   <div class="status-card">
     <span class="status-label">API Status</span>
-    <strong>{{ data.health.status }}</strong>
-    <span>Database: {{ data.health.database }}</span>
-    <span>Service: {{ data.health.service }}</span>
+    <strong>{{ data().health.status }}</strong>
+    <span>Database: {{ data().health.database }}</span>
+    <span>Service: {{ data().health.service }}</span>
   </div>
 </section>
 
-@if (data.error) {
+@if (data().error) {
   <section class="notice">
-    {{ data.error }}
+    {{ data().error }}
   </section>
 }
 
 <section class="metrics">
   <article class="metric-card">
     <span>Customers</span>
-    <strong>{{ data.counts.customers }}</strong>
+    <strong>{{ data().counts.customers }}</strong>
   </article>
   <article class="metric-card">
     <span>Domains</span>
-    <strong>{{ data.counts.domains }}</strong>
+    <strong>{{ data().counts.domains }}</strong>
   </article>
   <article class="metric-card">
     <span>Packages</span>
-    <strong>{{ data.counts.packages }}</strong>
+    <strong>{{ data().counts.packages }}</strong>
   </article>
   <article class="metric-card">
     <span>Activity Logs</span>
-    <strong>{{ data.counts.logs }}</strong>
+    <strong>{{ data().counts.logs }}</strong>
   </article>
 </section>
 
@@ -52,12 +50,12 @@
   <article class="panel">
     <div class="panel-header">
       <h2>Recent Customers</h2>
-      <span>{{ data.customers.length }} visible</span>
+      <span>{{ data().customers.length }} visible</span>
     </div>
 
-    @if (data.customers.length) {
+    @if (data().customers.length) {
       <div class="list">
-        @for (customer of data.customers; track customer.id) {
+        @for (customer of data().customers; track customer.id) {
           <div class="list-row">
             <div>
               <strong>{{ customer.name }}</strong>
@@ -75,12 +73,12 @@
   <article class="panel">
     <div class="panel-header">
       <h2>Live Domains</h2>
-      <span>{{ data.domains.length }} visible</span>
+      <span>{{ data().domains.length }} visible</span>
     </div>
 
-    @if (data.domains.length) {
+    @if (data().domains.length) {
       <div class="list">
-        @for (domain of data.domains; track domain.id) {
+        @for (domain of data().domains; track domain.id) {
           <div class="list-row">
             <div>
               <strong>{{ domain.fqdn }}</strong>
@@ -98,12 +96,12 @@
   <article class="panel">
     <div class="panel-header">
       <h2>App Packages</h2>
-      <span>{{ data.packages.length }} visible</span>
+      <span>{{ data().packages.length }} visible</span>
     </div>
 
-    @if (data.packages.length) {
+    @if (data().packages.length) {
       <div class="list">
-        @for (item of data.packages; track item.id) {
+        @for (item of data().packages; track item.id) {
           <div class="list-row">
             <div>
               <strong>{{ item.name }}</strong>
@@ -125,7 +123,7 @@
     </div>
 
     <div class="shortcut-list">
-      @for (item of data.quickLinks; track item) {
+      @for (item of data().quickLinks; track item) {
         <div class="shortcut-chip">{{ item }}</div>
       }
     </div>

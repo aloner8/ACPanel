@@ -3,6 +3,7 @@ import { DashboardPageComponent } from './pages/dashboard/dashboard.page';
 import { CustomersPageComponent } from './pages/customers/customers.page';
 import { DomainsPageComponent } from './pages/domains/domains.page';
 import { PackagesPageComponent } from './pages/packages/packages.page';
+import { DeploymentsPageComponent } from './pages/deployments/deployments.page';
 import { ActivityLogsPageComponent } from './pages/activity-logs/activity-logs.page';
 import { SettingsPageComponent } from './pages/settings/settings.page';
 import { LoginPageComponent } from './pages/login/login.page';
@@ -33,6 +34,11 @@ export const routes: Routes = [
   {
     path: 'packages',
     component: PackagesPageComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'deployments',
+    component: DeploymentsPageComponent,
     canActivate: [authGuard]
   },
   {

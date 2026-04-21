@@ -60,10 +60,68 @@ export interface AppPackage {
   id: string;
   name: string;
   slug: string;
+  description?: string | null;
   version: string;
   category?: string | null;
+  dockerImage?: string | null;
+  defaultPort?: number | null;
   installMode?: string | null;
+  templatePath?: string | null;
+  envSchema?: Record<string, unknown>;
   isActive: boolean;
+}
+
+export interface AppPackagePayload {
+  name: string;
+  slug: string;
+  category?: string | null;
+  description?: string | null;
+  version: string;
+  dockerImage?: string | null;
+  defaultPort?: number | null;
+  installMode?: string | null;
+  templatePath?: string | null;
+  envSchema?: Record<string, unknown>;
+  isActive: boolean;
+}
+
+export interface DeploymentScript {
+  id: string;
+  scriptType: string;
+  scriptName: string;
+  scriptPath: string;
+  runtime?: string | null;
+  version?: string | null;
+  appPackage?: AppPackage | null;
+}
+
+export interface DeploymentJob {
+  id: string;
+  jobType: string;
+  status: string;
+  resultSummary?: string | null;
+  createdAt: string;
+  customer?: Customer | null;
+  domain?: Domain | null;
+  script?: DeploymentScript | null;
+  requestedBy?: {
+    id: string;
+    email: string;
+    displayName: string;
+    role: string;
+  } | null;
+}
+
+export interface DeploymentPayload {
+  customerId: string;
+  domainId: string;
+  appPackageId: string;
+  jobType: string;
+  scriptType: string;
+  requestedVersion?: string | null;
+  runtime?: string | null;
+  envConfig?: Record<string, unknown>;
+  notes?: string | null;
 }
 
 export interface ActivityLog {
@@ -87,6 +145,11 @@ export interface DashboardSummary {
   domains: Domain[];
   packages: AppPackage[];
   logs: ActivityLog[];
+}
+
+export interface DashboardViewModel extends DashboardSummary {
+  quickLinks: string[];
+  error: string;
 }
 
 @Injectable({
@@ -135,6 +198,26 @@ export class ApiService {
     return this.http.get<AppPackage[]>(`${API_BASE_URL}/packages`);
   }
 
+  createPackage(payload: AppPackagePayload) {
+    return this.http.post<AppPackage>(`${API_BASE_URL}/packages`, payload);
+  }
+
+  updatePackage(id: string, payload: AppPackagePayload) {
+    return this.http.put<AppPackage>(`${API_BASE_URL}/packages/${id}`, payload);
+  }
+
+  deletePackage(id: string) {
+    return this.http.delete<void>(`${API_BASE_URL}/packages/${id}`);
+  }
+
+  getDeployments() {
+    return this.http.get<DeploymentJob[]>(`${API_BASE_URL}/deployments`);
+  }
+
+  createDeployment(payload: DeploymentPayload) {
+    return this.http.post<DeploymentJob>(`${API_BASE_URL}/deployments`, payload);
+  }
+
   getActivityLogs() {
     return this.http.get<ActivityLog[]>(`${API_BASE_URL}/activity-logs`);
   }
@@ -147,24 +230,30 @@ export class ApiService {
       packages: this.getPackages(),
       logs: this.getActivityLogs()
     }).pipe(
-      map(({ health, customers, domains, packages, logs }): DashboardSummary => ({
-        health,
+      map((result: {
+        health: HealthStatus;
+        customers: Customer[];
+        domains: Domain[];
+        packages: AppPackage[];
+        logs: ActivityLog[];
+      }): DashboardSummary => ({
+        health: result.health,
         counts: {
-          customers: customers.length,
-          domains: domains.length,
-          packages: packages.length,
-          logs: logs.length
+          customers: result.customers.length,
+          domains: result.domains.length,
+          packages: result.packages.length,
+          logs: result.logs.length
         },
-        customers: customers.slice(0, 5),
-        domains: domains.slice(0, 5),
-        packages: packages.slice(0, 4),
-        logs: logs.slice(0, 6)
+        customers: result.customers.slice(0, 5),
+        domains: result.domains.slice(0, 5),
+        packages: result.packages.slice(0, 4),
+        logs: result.logs.slice(0, 6)
       }))
     );
   }
 
   getQuickLinks() {
-    return of([
+    return of<string[]>([
       'Create customer workspace',
       'Map subdomain to package',
       'Generate nginx config',

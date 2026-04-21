@@ -5,22 +5,106 @@
   </div>
 </section>
 
-<section class="table-card">
-  <div class="table-head">
-    <span>Package</span>
-    <span>Category</span>
-    <span>Version</span>
-  </div>
+@if (errorMessage()) {
+  <p class="feedback error">{{ errorMessage() }}</p>
+}
 
-  @if (packages().length) {
-    @for (item of packages(); track item.id) {
-      <div class="table-row">
-        <strong>{{ item.name }}</strong>
-        <span>{{ item.category || 'General package' }}</span>
-        <code>{{ item.version }}</code>
+@if (successMessage()) {
+  <p class="feedback success">{{ successMessage() }}</p>
+}
+
+<section class="crud-layout">
+  <article class="form-card">
+    <div class="section-head">
+      <div>
+        <h2>{{ isEditing ? 'Edit Package' : 'Create Package' }}</h2>
+        <span>Prepare installable application templates for customers.</span>
       </div>
+      @if (isEditing) {
+        <button type="button" class="ghost-button" (click)="resetForm()">New</button>
+      }
+    </div>
+
+    <form class="entity-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field-grid">
+        <label>
+          <span>Name</span>
+          <input type="text" formControlName="name" placeholder="WordPress" />
+        </label>
+        <label>
+          <span>Slug</span>
+          <input type="text" formControlName="slug" placeholder="wordpress" />
+        </label>
+        <label>
+          <span>Category</span>
+          <input type="text" formControlName="category" placeholder="CMS" />
+        </label>
+        <label>
+          <span>Version</span>
+          <input type="text" formControlName="version" placeholder="6.8.1" />
+        </label>
+        <label>
+          <span>Docker Image</span>
+          <input type="text" formControlName="dockerImage" placeholder="wordpress:latest" />
+        </label>
+        <label>
+          <span>Default Port</span>
+          <input type="number" formControlName="defaultPort" placeholder="80" />
+        </label>
+        <label>
+          <span>Install Mode</span>
+          <input type="text" formControlName="installMode" placeholder="docker-stack" />
+        </label>
+        <label>
+          <span>Template Path</span>
+          <input type="text" formControlName="templatePath" placeholder="/templates/wordpress.yaml" />
+        </label>
+      </div>
+
+      <label class="stack-label">
+        <span>Description</span>
+        <textarea rows="4" formControlName="description" placeholder="Package description"></textarea>
+      </label>
+
+      <label class="checkbox-field">
+        <input type="checkbox" formControlName="isActive" />
+        <span>Active package</span>
+      </label>
+
+      <button type="submit" class="primary-button" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Saving...' : (isEditing ? 'Update Package' : 'Create Package') }}
+      </button>
+    </form>
+  </article>
+
+  <article class="list-card">
+    <div class="section-head">
+      <div>
+        <h2>Package List</h2>
+        <span>{{ packages().length }} records</span>
+      </div>
+    </div>
+
+    @if (packages().length) {
+      <div class="entity-list">
+        @for (item of packages(); track item.id) {
+          <div class="entity-row" [class.selected]="selectedPackageId() === item.id">
+            <button type="button" class="row-main" (click)="selectPackage(item)">
+              <strong>{{ item.name }}</strong>
+              <span>{{ item.category || item.dockerImage || 'General package' }}</span>
+              <code>{{ item.version }} · {{ item.slug }}</code>
+            </button>
+            <div class="row-actions">
+              <button type="button" class="ghost-button" (click)="selectPackage(item)">Edit</button>
+              @if (canDelete()) {
+                <button type="button" class="danger-button" (click)="deletePackage(item)">Delete</button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty">No packages yet. Create one to begin deployment flows.</p>
     }
-  } @else {
-    <p class="empty">No packages defined yet.</p>
-  }
+  </article>
 </section>

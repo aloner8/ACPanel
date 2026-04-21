@@ -1,8 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, of } from 'rxjs';
-import { ApiService } from '../../core/api/api.service';
+import { Component, inject, signal } from '@angular/core';
+import { ApiService, type ActivityLog } from '../../core/api/api.service';
 
 @Component({
   selector: 'app-activity-logs-page',
@@ -13,9 +11,11 @@ import { ApiService } from '../../core/api/api.service';
 })
 export class ActivityLogsPageComponent {
   private readonly api = inject(ApiService);
+  readonly logs = signal<ActivityLog[]>([]);
 
-  readonly logs = toSignal(
-    this.api.getActivityLogs().pipe(catchError(() => of([]))),
-    { initialValue: [] }
-  );
+  constructor() {
+    this.api.getActivityLogs().subscribe({
+      next: (logs: ActivityLog[]) => this.logs.set(logs)
+    });
+  }
 }

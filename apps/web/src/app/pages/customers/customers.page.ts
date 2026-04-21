@@ -49,7 +49,7 @@ export class CustomersPageComponent {
 
   loadCustomers() {
     this.api.getCustomers().subscribe({
-      next: (customers) => this.customers.set(customers),
+      next: (customers: Customer[]) => this.customers.set(customers),
       error: () => this.errorMessage.set('Unable to load customers.')
     });
   }
@@ -118,7 +118,7 @@ export class CustomersPageComponent {
           this.resetForm();
           this.loadCustomers();
         },
-        error: (error) => {
+        error: (error: { error?: { message?: string } }) => {
           this.errorMessage.set(error?.error?.message ?? 'Unable to save customer.');
         }
       });
@@ -142,7 +142,7 @@ export class CustomersPageComponent {
         }
         this.loadCustomers();
       },
-      error: (error) => {
+      error: (error: { error?: { message?: string } }) => {
         this.errorMessage.set(error?.error?.message ?? 'Unable to delete customer.');
       }
     });

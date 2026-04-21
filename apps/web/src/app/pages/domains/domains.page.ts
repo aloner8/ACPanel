@@ -47,14 +47,14 @@ export class DomainsPageComponent {
 
   loadCustomers() {
     this.api.getCustomers().subscribe({
-      next: (customers) => this.customers.set(customers),
+      next: (customers: Customer[]) => this.customers.set(customers),
       error: () => this.errorMessage.set('Unable to load customers for domain mapping.')
     });
   }
 
   loadDomains() {
     this.api.getDomains().subscribe({
-      next: (domains) => this.domains.set(domains),
+      next: (domains: Domain[]) => this.domains.set(domains),
       error: () => this.errorMessage.set('Unable to load domains.')
     });
   }
@@ -115,7 +115,7 @@ export class DomainsPageComponent {
           this.resetForm();
           this.loadDomains();
         },
-        error: (error) => {
+        error: (error: { error?: { message?: string } }) => {
           this.errorMessage.set(error?.error?.message ?? 'Unable to save domain.');
         }
       });
@@ -139,7 +139,7 @@ export class DomainsPageComponent {
         }
         this.loadDomains();
       },
-      error: (error) => {
+      error: (error: { error?: { message?: string } }) => {
         this.errorMessage.set(error?.error?.message ?? 'Unable to delete domain.');
       }
     });

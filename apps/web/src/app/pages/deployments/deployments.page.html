@@ -1,0 +1,111 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Install Flow</p>
+    <h1>Deployments</h1>
+  </div>
+</section>
+
+@if (errorMessage()) {
+  <p class="feedback error">{{ errorMessage() }}</p>
+}
+
+@if (successMessage()) {
+  <p class="feedback success">{{ successMessage() }}</p>
+}
+
+<section class="crud-layout">
+  <article class="form-card">
+    <div class="section-head">
+      <div>
+        <h2>Queue Deployment</h2>
+        <span>Select customer, domain, and app package to create a deployment job.</span>
+      </div>
+    </div>
+
+    <form class="entity-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field-grid">
+        <label>
+          <span>Customer</span>
+          <select formControlName="customerId">
+            <option value="">Select customer</option>
+            @for (customer of customers(); track customer.id) {
+              <option [value]="customer.id">{{ customer.name }} ({{ customer.code }})</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Domain</span>
+          <select formControlName="domainId">
+            <option value="">Select domain</option>
+            @for (domain of filteredDomains(); track domain.id) {
+              <option [value]="domain.id">{{ domain.fqdn }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Package</span>
+          <select formControlName="appPackageId">
+            <option value="">Select package</option>
+            @for (item of packages(); track item.id) {
+              <option [value]="item.id">{{ item.name }} ({{ item.version }})</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Job Type</span>
+          <select formControlName="jobType">
+            <option value="deploy">deploy</option>
+            <option value="recreate">recreate</option>
+            <option value="backup">backup</option>
+          </select>
+        </label>
+        <label>
+          <span>Script Type</span>
+          <input type="text" formControlName="scriptType" placeholder="docker-stack" />
+        </label>
+        <label>
+          <span>Runtime</span>
+          <input type="text" formControlName="runtime" placeholder="docker-stack" />
+        </label>
+        <label>
+          <span>Requested Version</span>
+          <input type="text" formControlName="requestedVersion" placeholder="optional override" />
+        </label>
+      </div>
+
+      <label class="stack-label">
+        <span>Notes</span>
+        <textarea rows="4" formControlName="notes" placeholder="Optional deployment notes"></textarea>
+      </label>
+
+      <button type="submit" class="primary-button" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Queueing...' : 'Queue Deployment Job' }}
+      </button>
+    </form>
+  </article>
+
+  <article class="list-card">
+    <div class="section-head">
+      <div>
+        <h2>Deployment Jobs</h2>
+        <span>{{ jobs().length }} records</span>
+      </div>
+    </div>
+
+    @if (jobs().length) {
+      <div class="entity-list">
+        @for (job of jobs(); track job.id) {
+          <div class="entity-row">
+            <div class="row-main static-row">
+              <strong>{{ job.script?.appPackage?.name || 'Package' }} on {{ job.domain?.fqdn || 'domain' }}</strong>
+              <span>{{ job.customer?.name || 'Customer' }} · {{ job.jobType }} · {{ job.script?.version || 'version n/a' }}</span>
+              <code>{{ job.status }} · {{ job.createdAt | date: 'medium' }}</code>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty">No deployment jobs yet. Queue the first one from the form.</p>
+    }
+  </article>
+</section>

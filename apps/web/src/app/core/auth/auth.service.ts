@@ -29,11 +29,11 @@ export class AuthService {
     }
 
     return this.http.get<{ user: AuthUser }>(`${API_BASE_URL}/auth/me`).pipe(
-      tap(({ user }) => {
+      tap(({ user }: { user: AuthUser }) => {
         this.userState.set(user);
         this.initializedState.set(true);
       }),
-      map(({ user }) => user),
+      map(({ user }: { user: AuthUser }) => user),
       catchError(() => {
         this.clearSession();
         this.initializedState.set(true);
@@ -44,7 +44,7 @@ export class AuthService {
 
   login(payload: LoginPayload) {
     return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/login`, payload).pipe(
-      tap((response) => this.setSession(response))
+      tap((response: AuthResponse) => this.setSession(response))
     );
   }
 

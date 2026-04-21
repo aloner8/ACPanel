@@ -55,7 +55,7 @@ export class LoginPageComponent {
         next: () => {
           void this.router.navigateByUrl('/');
         },
-        error: (error) => {
+        error: (error: { error?: { message?: string } }) => {
           this.errorMessage.set(error?.error?.message ?? 'Login failed. Please check your credentials.');
         }
       });
@@ -82,7 +82,7 @@ export class LoginPageComponent {
             email: this.bootstrapForm.getRawValue().email
           });
         },
-        error: (error) => {
+        error: (error: { error?: { message?: string } }) => {
           this.errorMessage.set(error?.error?.message ?? 'Bootstrap failed. The system may already have an admin.');
         }
       });
