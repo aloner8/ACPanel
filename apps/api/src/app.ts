@@ -10,6 +10,7 @@ import { domainRoutes } from './modules/domains/domains.route.js';
 import { packageRoutes } from './modules/packages/packages.route.js';
 import { activityLogRoutes } from './modules/activity-logs/activity-logs.route.js';
 import { deploymentRoutes } from './modules/deployments/deployments.route.js';
+import { deploymentExecutor } from './modules/deployments/deployments.executor.js';
 import { backupRoutes } from './modules/backups/backups.route.js';
 
 export async function buildApp() {
@@ -24,6 +25,11 @@ export async function buildApp() {
   await app.register(prismaPlugin);
   await app.register(authPlugin);
 
+  // Provide a root route so visiting http://localhost:3000/ is useful
+  app.get('/', async (_request, reply) => {
+    return reply.redirect('/api/health');
+  });
+
   await app.register(healthRoutes, { prefix: '/api' });
   await app.register(authRoutes, { prefix: '/api' });
   await app.register(customerRoutes, { prefix: '/api' });
@@ -31,6 +37,7 @@ export async function buildApp() {
   await app.register(packageRoutes, { prefix: '/api' });
   await app.register(activityLogRoutes, { prefix: '/api' });
   await app.register(deploymentRoutes, { prefix: '/api' });
+  await app.register(deploymentExecutor);
   await app.register(backupRoutes, { prefix: '/api' });
 
   return app;
