@@ -13,6 +13,7 @@ export interface Customer {
   id: string;
   code: string;
   name: string;
+  customerType?: string | null;
   email?: string | null;
   phone?: string | null;
   companyName?: string | null;
@@ -22,6 +23,7 @@ export interface Customer {
 export interface CustomerPayload {
   code: string;
   name: string;
+  customerType?: string | null;
   email?: string | null;
   phone?: string | null;
   companyName?: string | null;
@@ -65,8 +67,10 @@ export interface AppPackage {
   category?: string | null;
   dockerImage?: string | null;
   defaultPort?: number | null;
+  engine?: string | null;
   installMode?: string | null;
   templatePath?: string | null;
+  config?: Record<string, unknown> | null;
   envSchema?: Record<string, unknown>;
   isActive: boolean;
 }
@@ -79,8 +83,10 @@ export interface AppPackagePayload {
   version: string;
   dockerImage?: string | null;
   defaultPort?: number | null;
+  engine?: string | null;
   installMode?: string | null;
   templatePath?: string | null;
+  config?: Record<string, unknown> | null;
   envSchema?: Record<string, unknown>;
   isActive: boolean;
 }
@@ -152,6 +158,12 @@ export interface DashboardViewModel extends DashboardSummary {
   error: string;
 }
 
+export interface RefRecord {
+  id: number;
+  refname: string;
+  values: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -176,6 +188,12 @@ export class ApiService {
 
   deleteCustomer(id: string) {
     return this.http.delete<void>(`${API_BASE_URL}/customers/${id}`);
+  }
+
+  getRefValues(refname: string) {
+    return this.http
+      .get<RefRecord>(`${API_BASE_URL}/refs/${refname}`)
+      .pipe(map((reference: RefRecord) => reference.values));
   }
 
   getDomains() {

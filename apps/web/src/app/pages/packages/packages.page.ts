@@ -32,8 +32,10 @@ export class PackagesPageComponent {
     version: ['1.0.0', [Validators.required]],
     dockerImage: [''],
     defaultPort: [''],
+    engine: [''],
     installMode: ['docker-stack'],
     templatePath: [''],
+    config: ['{}'],
     isActive: [true]
   });
 
@@ -64,8 +66,10 @@ export class PackagesPageComponent {
       version: item.version ?? '1.0.0',
       dockerImage: item.dockerImage ?? '',
       defaultPort: item.defaultPort?.toString() ?? '',
+      engine: item.engine ?? '',
       installMode: item.installMode ?? 'docker-stack',
       templatePath: item.templatePath ?? '',
+      config: JSON.stringify(item.config ?? {}, null, 2),
       isActive: item.isActive
     });
   }
@@ -82,8 +86,10 @@ export class PackagesPageComponent {
       version: '1.0.0',
       dockerImage: '',
       defaultPort: '',
+      engine: '',
       installMode: 'docker-stack',
       templatePath: '',
+      config: '{}',
       isActive: true
     });
   }
@@ -95,6 +101,9 @@ export class PackagesPageComponent {
     }
 
     const payload = this.toPayload();
+    if (!payload) {
+      return;
+    }
     const selectedId = this.selectedPackageId();
     const request$ = selectedId
       ? this.api.updatePackage(selectedId, payload)
@@ -142,8 +151,23 @@ export class PackagesPageComponent {
     });
   }
 
-  private toPayload(): AppPackagePayload {
+  private toPayload(): AppPackagePayload | null {
     const value = this.form.getRawValue();
+    let config: Record<string, unknown> | null = null;
+
+    if (value.config.trim()) {
+      try {
+        const parsed = JSON.parse(value.config);
+        if (!parsed || Array.isArray(parsed) || typeof parsed !== 'object') {
+          this.errorMessage.set('Config must be a JSON object.');
+          return null;
+        }
+        config = parsed as Record<string, unknown>;
+      } catch {
+        this.errorMessage.set('Config JSON is invalid.');
+        return null;
+      }
+    }
 
     return {
       name: value.name,
@@ -153,8 +177,10 @@ export class PackagesPageComponent {
       version: value.version,
       dockerImage: value.dockerImage || null,
       defaultPort: value.defaultPort ? Number(value.defaultPort) : null,
+      engine: value.engine || null,
       installMode: value.installMode || null,
       templatePath: value.templatePath || null,
+      config,
       envSchema: undefined,
       isActive: value.isActive
     };

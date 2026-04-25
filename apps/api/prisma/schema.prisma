@@ -44,6 +44,7 @@ model Customer {
   id                String             @id @default(cuid())
   code              String             @unique
   name              String
+  customerType      String?            @map("customer_type")
   email             String?
   phone             String?
   companyName       String?
@@ -62,6 +63,14 @@ model Customer {
   jobs              DeploymentJob[]
   activityLogs      ActivityLog[]
   backupRecords     BackupRecord[]
+}
+
+model Ref {
+  id        Int    @id @default(autoincrement())
+  refname   String @unique
+  refValues Json   @map("values")
+
+  @@map("ref")
 }
 
 model Domain {
@@ -109,8 +118,10 @@ model AppPackage {
   version        String
   dockerImage    String?
   defaultPort    Int?
+  engine         String?
   installMode    String?
   templatePath   String?
+  config         Json?
   envSchema      Json?
   isActive       Boolean            @default(true)
   createdAt      DateTime           @default(now())

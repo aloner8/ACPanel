@@ -12,6 +12,7 @@ import { activityLogRoutes } from './modules/activity-logs/activity-logs.route.j
 import { deploymentRoutes } from './modules/deployments/deployments.route.js';
 import { deploymentExecutor } from './modules/deployments/deployments.executor.js';
 import { backupRoutes } from './modules/backups/backups.route.js';
+import { refRoutes } from './modules/refs/refs.route.js';
 
 export async function buildApp() {
   const app = Fastify({
@@ -37,6 +38,7 @@ export async function buildApp() {
   await app.register(packageRoutes, { prefix: '/api' });
   await app.register(activityLogRoutes, { prefix: '/api' });
   await app.register(deploymentRoutes, { prefix: '/api' });
+  await app.register(refRoutes, { prefix: '/api' });
   await app.register(deploymentExecutor);
   await app.register(backupRoutes, { prefix: '/api' });
 

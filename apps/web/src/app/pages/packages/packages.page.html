@@ -52,6 +52,10 @@
           <input type="number" formControlName="defaultPort" placeholder="80" />
         </label>
         <label>
+          <span>Engine</span>
+          <input type="text" formControlName="engine" placeholder="root nginx" />
+        </label>
+        <label>
           <span>Install Mode</span>
           <input type="text" formControlName="installMode" placeholder="docker-stack" />
         </label>
@@ -60,6 +64,15 @@
           <input type="text" formControlName="templatePath" placeholder="/templates/wordpress.yaml" />
         </label>
       </div>
+
+      <label class="stack-label">
+        <span>Config (JSON)</span>
+        <textarea
+          rows="8"
+          formControlName="config"
+          placeholder='{"path":"home/?username/?domain/public_html","other":"?"}'
+        ></textarea>
+      </label>
 
       <label class="stack-label">
         <span>Description</span>
@@ -91,7 +104,7 @@
           <div class="entity-row" [class.selected]="selectedPackageId() === item.id">
             <button type="button" class="row-main" (click)="selectPackage(item)">
               <strong>{{ item.name }}</strong>
-              <span>{{ item.category || item.dockerImage || 'General package' }}</span>
+              <span>{{ item.category || item.engine || item.dockerImage || 'General package' }}</span>
               <code>{{ item.version }} · {{ item.slug }}</code>
             </button>
             <div class="row-actions">

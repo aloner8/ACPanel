@@ -5,6 +5,17 @@ import { finalize } from 'rxjs';
 import { ApiService, type Customer, type CustomerPayload } from '../../core/api/api.service';
 import { AuthService } from '../../core/auth/auth.service';
 
+const DEFAULT_CUSTOMER_TYPES = [
+  'ส่วนราชการ',
+  'ร้านค้า',
+  'โรงพยาบาล',
+  'อบต',
+  'คลีนิค',
+  'สถานศึกษา',
+  'บุคคล',
+  'ทั่วไป'
+] as const;
+
 @Component({
   selector: 'app-customers-page',
   standalone: true,
@@ -22,11 +33,13 @@ export class CustomersPageComponent {
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
+  readonly customerTypes = signal<string[]>([...DEFAULT_CUSTOMER_TYPES]);
   readonly canDelete = computed(() => this.auth.user()?.role === 'ADMIN');
 
   readonly form = this.fb.nonNullable.group({
     code: ['', [Validators.required]],
     name: ['', [Validators.required]],
+    customerType: [''],
     email: [''],
     phone: [''],
     companyName: [''],
@@ -41,6 +54,7 @@ export class CustomersPageComponent {
 
   constructor() {
     this.loadCustomers();
+    this.loadCustomerTypes();
   }
 
   get isEditing() {
@@ -54,6 +68,19 @@ export class CustomersPageComponent {
     });
   }
 
+  loadCustomerTypes() {
+    this.api.getRefValues('customer_type').subscribe({
+      next: (values: string[]) => {
+        if (values.length) {
+          this.customerTypes.set(values);
+        }
+      },
+      error: () => {
+        this.customerTypes.set([...DEFAULT_CUSTOMER_TYPES]);
+      }
+    });
+  }
+
   selectCustomer(customer: Customer) {
     this.selectedCustomerId.set(customer.id);
     this.errorMessage.set('');
@@ -61,6 +88,7 @@ export class CustomersPageComponent {
     this.form.patchValue({
       code: customer.code ?? '',
       name: customer.name ?? '',
+      customerType: customer.customerType ?? '',
       email: customer.email ?? '',
       phone: customer.phone ?? '',
       companyName: customer.companyName ?? '',
@@ -81,6 +109,7 @@ export class CustomersPageComponent {
     this.form.reset({
       code: '',
       name: '',
+      customerType: '',
       email: '',
       phone: '',
       companyName: '',
@@ -154,6 +183,7 @@ export class CustomersPageComponent {
     return {
       code: value.code,
       name: value.name,
+      customerType: value.customerType || null,
       email: value.email || null,
       phone: value.phone || null,
       companyName: value.companyName || null,

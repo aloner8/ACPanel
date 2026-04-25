@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, effect, inject, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from './core/auth/auth.service';
 
 @Component({
@@ -11,4 +11,22 @@ import { AuthService } from './core/auth/auth.service';
 })
 export class App {
   readonly auth = inject(AuthService);
+  readonly isSidebarCollapsed = signal(false);
+  private readonly router = inject(Router);
+
+  constructor() {
+    effect(() => {
+      if (!this.auth.initialized() || this.auth.isAuthenticated()) {
+        return;
+      }
+
+      if (!this.router.url.startsWith('/login')) {
+        void this.router.navigateByUrl('/login');
+      }
+    });
+  }
+
+  toggleSidebar() {
+    this.isSidebarCollapsed.update((collapsed) => !collapsed);
+  }
 }

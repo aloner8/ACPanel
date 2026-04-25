@@ -20,9 +20,21 @@ export const userCreateSchema = z.object({
   role: userRoleSchema
 });
 
+export const customerTypeSchema = z.enum([
+  'ส่วนราชการ',
+  'ร้านค้า',
+  'โรงพยาบาล',
+  'อบต',
+  'คลีนิค',
+  'สถานศึกษา',
+  'บุคคล',
+  'ทั่วไป'
+]);
+
 export const customerSchema = z.object({
   code: z.string().min(1),
   name: z.string().min(1),
+  customerType: customerTypeSchema.optional().nullable(),
   email: z.string().email().optional().nullable(),
   phone: z.string().optional().nullable(),
   companyName: z.string().optional().nullable(),
@@ -54,8 +66,10 @@ export const appPackageSchema = z.object({
   version: z.string().min(1),
   dockerImage: z.string().optional().nullable(),
   defaultPort: z.number().int().positive().optional().nullable(),
+  engine: z.string().optional().nullable(),
   installMode: z.string().optional().nullable(),
   templatePath: z.string().optional().nullable(),
+  config: z.record(z.any()).optional().nullable(),
   envSchema: z.record(z.any()).optional(),
   isActive: z.boolean().default(true)
 });
